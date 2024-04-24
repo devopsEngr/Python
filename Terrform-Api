@@ -1,0 +1,35 @@
+#Terraform Api call from azure to trigger deployment
+url = "https://app.terraform.io/app/companyagency/workspaces/orgCloud-Gryphon-DevOps/variables/org_version"
+segments = url.split("/")
+variable_id = segments[-1]
+print(variable_id)  # Output: variables
+
+
+import requests
+
+# Workspace and variable information
+workspace_ids = ["ws-twgPi4J4j6ZuQb19"]
+variable_ids = ["org_version", "creator_version", "survey-form-validator-lambda_version", "website_version"]
+api_token = "token-string"
+
+# Loop through each workspace and variable
+for workspace_id, variable_id in zip(workspace_ids, variable_ids):
+    url = f"https://app.terraform.io/api/v2/workspaces/{workspace_id}/vars/{variable_id}"
+    response = requests.patch(url)
+    print(f"url is accessible {url}: {response.status_code}")
+    #https://app.terraform.io/app/companyagency/workspaces/myworkspace/variables/org_version
+    headers = {
+        "Authorization": f"Bearer {api_token}",
+        "Content-Type": "application/vnd.api+json"
+    }
+    payload = {
+        "data": {jh c
+            "type": "vars",
+            "attributes": {
+                "value": "v2.6.0.29-development"
+            }
+        }
+    }
+
+    response = requests.patch(url, headers=headers, json=payload)
+    print(f"Variable update for workspace {workspace_id}, variable {variable_id}: {response.status_code}")
